@@ -5,7 +5,7 @@ import ConsumerPage from './ConsumerPage'
 import { loadPages } from '../actions'
 
 const mapStateToProps = state => ({
-  pages: state.pages
+  pages: Object.keys(state.pages).map(key => state.pages[key])
 })
 
 const mapDispatchToProps = dispatch => ({
