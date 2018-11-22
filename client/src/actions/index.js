@@ -7,5 +7,8 @@ export const loadPages = () => async dispatch => {
 
 const receivePages = pages => ({
   type: 'RECEIVE_PAGES',
-  payload: pages
+  payload: pages.map(page => ({
+    ...page,
+    page_data: JSON.parse(page.page_data)
+  }))
 })

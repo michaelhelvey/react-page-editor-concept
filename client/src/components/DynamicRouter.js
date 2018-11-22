@@ -48,7 +48,6 @@ export default connect(
         return <Loading />
       }
       const pageData = this.getPageDataForRoute(this.props.location.pathname)
-      console.log(pageData)
       if (pageData) {
         return <ConsumerPage data={pageData} />
       }
