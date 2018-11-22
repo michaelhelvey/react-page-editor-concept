@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { loadPageWithId } from '../actions'
+import { loadPageWithId, savePage } from '../actions'
 import AdminHeader from './AdminHeader'
 import Button from 'react-bootstrap/lib/Button'
 import Form from 'react-bootstrap/lib/Form'
@@ -12,7 +12,8 @@ const mapStateToProps = (state, props) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadPage: id => dispatch(loadPageWithId(id))
+  loadPage: id => dispatch(loadPageWithId(id)),
+  savePage: pageData => dispatch(savePage(pageData))
 })
 
 export default connect(
@@ -23,24 +24,41 @@ export default connect(
     static propTypes = {
       page: PropTypes.object,
       match: PropTypes.object,
-      loadPage: PropTypes.func
+      loadPage: PropTypes.func,
+      savePage: PropTypes.func
     }
 
-    constructor () {
-      super()
+    constructor (props) {
+      super(props)
       this.state = {
-        loadingPage: true
+        loadingPage: true,
+        page: props.page
       }
+      this.onChangeField = this.onChangeField.bind(this)
+      this.savePage = this.savePage.bind(this)
     }
 
     componentDidMount () {
       if (!this.props.page) {
-        this.props.loadPage(this.props.match.params.id).then(() => {
-          this.setState({ loadingPage: false })
+        this.props.loadPage(this.props.match.params.id).then(page => {
+          this.setState({ loadingPage: false, page })
         })
       } else {
         this.setState({ loadingPage: false })
       }
+    }
+
+    onChangeField (key, value) {
+      this.setState({
+        page: {
+          ...this.state.page,
+          [key]: value
+        }
+      })
+    }
+
+    savePage () {
+      this.props.savePage(this.state.page)
     }
 
     render () {
@@ -54,7 +72,7 @@ export default connect(
             <div className='pages-container'>
               <div className={'pages-title-container'}>
                 <h1>Editing Page: {this.props.page.title}</h1>
-                <Button variant='primary' size='sm'>
+                <Button variant='primary' size='sm' onClick={this.savePage}>
                   Save Page
                 </Button>
               </div>
@@ -64,7 +82,8 @@ export default connect(
                   <Form.Control
                     type='text'
                     placeholder='Page Title'
-                    value={this.props.page.title}
+                    value={this.state.page.title}
+                    onChange={e => this.onChangeField('title', e.target.value)}
                   />
                   <Form.Text className='text-muted'>
                     This is just for display and has no impact on the rendered
@@ -77,7 +96,8 @@ export default connect(
                   <Form.Control
                     type='text'
                     placeholder='Page Path'
-                    value={this.props.page.path}
+                    value={this.state.page.path}
+                    onChange={e => this.onChangeField('path', e.target.value)}
                   />
                   <Form.Text className='text-muted'>
                     What should be the relative url of the page?

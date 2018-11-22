@@ -12,7 +12,7 @@ CREATE TABLE pages
   (255),
   path varchar
   (255),
-  page_data json,
+  page_data LONGTEXT,
   PRIMARY KEY
   (ID)
 );

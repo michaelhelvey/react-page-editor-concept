@@ -42,7 +42,13 @@ const createPage = async params => {
 const updatePage = async (id, params) => {
   let paramsString = ''
   Object.keys(params).forEach((key, i) => {
-    paramsString += `${key} = "${params[key]}" ${
+    let newValue = ''
+    if (key === 'page_data') {
+      newValue = mysql.escape(params[key])
+    } else {
+      newValue = params[key]
+    }
+    paramsString += `${key} = "${newValue}" ${
       i < Object.keys(params).length - 1 ? ', ' : ''
     } `
   })

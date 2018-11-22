@@ -12,6 +12,24 @@ export const loadPageWithId = id => async dispatch => {
   return json
 }
 
+export const savePage = pageData => async dispatch => {
+  console.log(JSON.stringify(pageData))
+  const response = await fetch(
+    'http://localhost:5000/api/pages/' + pageData.id,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(pageData)
+    }
+  )
+  console.log(response)
+  const json = await response.json()
+  dispatch(receiveSinglePage(json))
+  return json
+}
+
 const receiveSinglePage = page => ({
   type: 'RECEIVE_SINGLE_PAGE',
   payload: page
@@ -19,8 +37,5 @@ const receiveSinglePage = page => ({
 
 const receivePages = pages => ({
   type: 'RECEIVE_PAGES',
-  payload: pages.map(page => ({
-    ...page,
-    page_data: JSON.parse(page.page_data)
-  }))
+  payload: pages
 })
