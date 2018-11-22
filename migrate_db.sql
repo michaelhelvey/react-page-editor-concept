@@ -10,7 +10,7 @@ CREATE TABLE pages
   AUTO_INCREMENT,
   title varchar
   (255),
-  slug varchar
+  path varchar
   (255),
   page_data json,
   PRIMARY KEY

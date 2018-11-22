@@ -1,18 +1,9 @@
-const initialState = {
-  1: {
-    title: 'Home page',
-    slug: '/',
-    page_data: '{}'
-  },
-  2: {
-    title: 'About',
-    slug: '/about',
-    page_data: '{}'
-  }
-}
+const initialState = []
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case 'RECEIVE_PAGES':
+      return action.payload
     default:
       return state
   }
