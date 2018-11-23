@@ -27,3 +27,33 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.editor {
+  padding: 1em;
+  box-shadow: 1px 2px 0px lightgrey;
+  background-color: white;
+}
+
+.editor-component-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.editor-component-container:hover {
+  border: 1px solid #F7F7F7;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.editor-fluff {
+  display: none;
+}
+
+.editor-component-container:hover > .editor-fluff {
+  display: block;
+}
+
+.component-controls > .component-controls-button {
+  margin: 5px 0;
+}

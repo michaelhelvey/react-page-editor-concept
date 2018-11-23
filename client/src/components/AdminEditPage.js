@@ -52,22 +52,10 @@ export default connect(
       }
     }
 
-    onUpdateData (dataId, comp, newData) {
-      // find the element in the array I want to change
-      const pageData = this.props.page.page_data
-      pageData.forEach((componentDef, index) => {
-        if (componentDef.id === dataId) {
-          // gods of functional programming pls dont kill me i have a family
-          pageData[index] = {
-            ...componentDef,
-            component: comp,
-            data: newData
-          }
-        }
-      })
+    onUpdateData (pageDataArray) {
       this.props.updatePage({
         ...this.props.page,
-        page_data: pageData
+        page_data: pageDataArray
       })
     }
 
@@ -132,7 +120,8 @@ export default connect(
                   </Form.Text>
                 </Form.Group>
               </Form>
-              <AdminEditor pageData={this.props.page ? this.props.page.page_data : []} onUpdateData={this.onUpdateData} />
+              <h6>Page Content</h6>
+              <AdminEditor page={this.props.page} onUpdateData={this.onUpdateData} />
             </div>
           </div>
         </div>

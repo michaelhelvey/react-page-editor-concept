@@ -1,14 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Textarea from 'react-textarea-autosize'
+
 import './cms.css'
 
-const ConsumerRender = props => <h1>{props.data.title}</h1>
+const ConsumerRender = props => <p>{props.data.content}</p>
 ConsumerRender.propTypes = {
   data: PropTypes.object
 }
 
 const EditorRender = props => (
-  <input className={'h1-input'} defaultValue={props.data.title} onChange={e => props.updateData({ title: e.target.value })} />
+  <Textarea className={'p-input'} defaultValue={props.data.content} onChange={e => props.updateData({ content: e.target.value })} />
 )
 EditorRender.propTypes = {
   data: PropTypes.object,
@@ -18,6 +20,6 @@ EditorRender.propTypes = {
 export default {
   consumer: ConsumerRender,
   editor: EditorRender,
-  initData: () => ({ title: '' }),
-  displayName: 'Header'
+  initData: () => ({ content: '' }),
+  displayName: 'Paragraph'
 }
