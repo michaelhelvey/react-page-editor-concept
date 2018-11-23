@@ -12,7 +12,7 @@ CREATE TABLE pages
   (255),
   path varchar
   (255),
-  page_data LONGTEXT,
+  page_data LONGTEXT DEFAULT "W10=",
   PRIMARY KEY
   (ID)
 );
