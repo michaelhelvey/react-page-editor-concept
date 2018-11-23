@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ConsumerRender = props => <h1>{props.data}</h1>
+const ConsumerRender = props => <h1>{props.data.title}</h1>
 ConsumerRender.propTypes = {
-  data: PropTypes.string
+  data: PropTypes.object
 }
 
 const EditorRender = props => (
-  <input defaultValue={props.data} onChange={e => props.updateData(e.target.value)} />
+  <input defaultValue={props.data.title} onChange={e => props.updateData({ title: e.target.value })} />
 )
 EditorRender.propTypes = {
-  data: PropTypes.string,
+  data: PropTypes.object,
   updateData: PropTypes.func
 }
 

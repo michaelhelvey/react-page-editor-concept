@@ -16,6 +16,10 @@ export const loadPageWithId = id => async dispatch => {
   return result
 }
 
+export const updateLocalPage = page => dispatch => {
+  dispatch(receiveSinglePageWithoutTransform(page))
+}
+
 export const savePage = pageData => async dispatch => {
   const body = JSON.stringify({
     ...pageData,
@@ -36,6 +40,11 @@ export const savePage = pageData => async dispatch => {
   dispatch(receiveSinglePage(json))
   return json
 }
+
+const receiveSinglePageWithoutTransform = rawPage => ({
+  type: 'RECEIVE_SINGLE_PAGE',
+  payload: rawPage
+})
 
 const receiveSinglePage = page => ({
   type: 'RECEIVE_SINGLE_PAGE',

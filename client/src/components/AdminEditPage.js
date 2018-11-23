@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { loadPageWithId, savePage } from '../actions'
+import { loadPageWithId, savePage, updateLocalPage } from '../actions'
 import AdminHeader from './AdminHeader'
 import Button from 'react-bootstrap/lib/Button'
 import Form from 'react-bootstrap/lib/Form'
-import cmsComponents from '../cms'
+import AdminEditor from './AdminEditor'
 import './admin.css'
 
 const mapStateToProps = (state, props) => ({
@@ -14,21 +14,9 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
   loadPage: id => dispatch(loadPageWithId(id)),
-  savePage: pageData => dispatch(savePage(pageData))
+  savePage: pageData => dispatch(savePage(pageData)),
+  updatePage: pageData => dispatch(updateLocalPage(pageData))
 })
-
-const EditorComponent = (props) => (
-  <div>
-    {props.pageData.map(componentDef => {
-      const Component = cmsComponents[componentDef.component]
-      return <Component.editor data={componentDef.data} key={Math.random()} updateData={(d) => props.onUpdateData(componentDef.component, d)} />
-    })}
-  </div>
-)
-EditorComponent.propTypes = {
-  pageData: PropTypes.array,
-  onUpdateData: PropTypes.func
-}
 
 export default connect(
   mapStateToProps,
@@ -39,17 +27,16 @@ export default connect(
       page: PropTypes.object,
       match: PropTypes.object,
       loadPage: PropTypes.func,
-      savePage: PropTypes.func
+      savePage: PropTypes.func,
+      updatePage: PropTypes.func
     }
 
     constructor (props) {
       super(props)
       this.state = {
         loadingPage: true,
-        page: props.page,
         isSavingPage: false
       }
-      this.pageData = []
       this.onChangeField = this.onChangeField.bind(this)
       this.savePage = this.savePage.bind(this)
       this.onUpdateData = this.onUpdateData.bind(this)
@@ -57,50 +44,43 @@ export default connect(
 
     componentDidMount () {
       if (!this.props.page) {
-        this.props.loadPage(this.props.match.params.id).then(page => {
-          this.setState({ loadingPage: false, page })
+        this.props.loadPage(this.props.match.params.id).then(() => {
+          this.setState({ loadingPage: false })
         })
       } else {
         this.setState({ loadingPage: false })
       }
     }
 
-    componentDidUpdate () {
-      if (this.state.page) {
-        this.pageData = this.state.page.page_data
-      }
-    }
-
     onUpdateData (dataId, comp, newData) {
       // find the element in the array I want to change
-      this.pageData.forEach((componentDef, index) => {
+      const pageData = this.props.page.page_data
+      pageData.forEach((componentDef, index) => {
         if (componentDef.id === dataId) {
           // gods of functional programming pls dont kill me i have a family
-          this.pageData[index] = {
+          pageData[index] = {
             ...componentDef,
             component: comp,
             data: newData
           }
         }
       })
+      this.props.updatePage({
+        ...this.props.page,
+        page_data: pageData
+      })
     }
 
     onChangeField (key, value) {
-      this.setState({
-        page: {
-          ...this.state.page,
-          [key]: value
-        }
+      this.props.updatePage({
+        ...this.props.page,
+        [key]: value
       })
     }
 
     savePage () {
-      const pageToSave = {
-        ...this.state.page,
-        page_data: this.pageData
-      }
       this.setState({ isSavingPage: true })
-      this.props.savePage(pageToSave).then(() => {
+      this.props.savePage(this.props.page).then(() => {
         this.setState({ isSavingPage: false })
       })
     }
@@ -130,7 +110,7 @@ export default connect(
                   <Form.Control
                     type='text'
                     placeholder='Page Title'
-                    value={this.state.page.title}
+                    value={this.props.page.title}
                     onChange={e => this.onChangeField('title', e.target.value)}
                   />
                   <Form.Text className='text-muted'>
@@ -144,7 +124,7 @@ export default connect(
                   <Form.Control
                     type='text'
                     placeholder='Page Path'
-                    value={this.state.page.path}
+                    value={this.props.page.path}
                     onChange={e => this.onChangeField('path', e.target.value)}
                   />
                   <Form.Text className='text-muted'>
@@ -152,12 +132,7 @@ export default connect(
                   </Form.Text>
                 </Form.Group>
               </Form>
-              <div className='editor'>
-                {this.props.page.page_data.map(componentDef => {
-                  const Component = cmsComponents[componentDef.component]
-                  return <Component.editor data={componentDef.data} key={componentDef.id} updateData={(d) => this.onUpdateData(componentDef.id, componentDef.component, d)} />
-                })}
-              </div>
+              <AdminEditor pageData={this.props.page ? this.props.page.page_data : []} onUpdateData={this.onUpdateData} />
             </div>
           </div>
         </div>
