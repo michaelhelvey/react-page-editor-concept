@@ -51,7 +51,11 @@
 }
 
 .editor-component-container:hover > .editor-fluff {
-  display: block;
+  display: flex;
+}
+
+.component-controls {
+  flex-direction: column;
 }
 
 .component-controls > .component-controls-button {

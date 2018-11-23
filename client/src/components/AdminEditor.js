@@ -92,7 +92,7 @@ export default class AdminEditor extends React.Component {
           const Component = cmsComponents[componentDef.component]
           return (
             <div className={'editor-component-container'} key={componentDef.id}>
-              <div className='editor-fluff component-controls'>
+              <div className='component-controls editor-fluff '>
                 <Button onClick={() => this.shiftComponentUp(componentDef)} className='component-controls-button' size='sm' variant='light'>↑</Button>
                 <Button onClick={() => this.removeComponent(componentDef.id)} className='component-controls-button' size='sm' variant='danger'>-</Button>
                 <Button onClick={() => this.shiftComponentDown(componentDef)} className='component-controls-button' size='sm' variant='light'>↓</Button>
