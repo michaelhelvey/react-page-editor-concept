@@ -12,7 +12,11 @@ CREATE TABLE pages
   (255),
   path varchar
   (255),
-  page_data LONGTEXT DEFAULT "W10=",
+  page_data LONGTEXT,
   PRIMARY KEY
   (ID)
 );
+
+INSERT INTO pages values (1, "Home Page", "/", "W10=");
+
+INSERT INTO pages values (2, "About Page", "about", "W10=");
