@@ -11,7 +11,7 @@ function insertAndShift (arr, from, to) {
 }
 
 const AddComponentButton = (props) => (
-  <div className='editor-fluff'>
+  <div className={props.forceShow ? '' : 'editor-fluff'}>
     <Dropdown>
       <Dropdown.Toggle variant='primary' id='dropdown-basic' size='sm'>
     Add Component Below
@@ -29,7 +29,8 @@ const AddComponentButton = (props) => (
   </div>
 )
 AddComponentButton.propTypes = {
-  addComponentBelow: PropTypes.func
+  addComponentBelow: PropTypes.func,
+  forceShow: PropTypes.bool
 }
 
 export default class AdminEditor extends React.Component {
@@ -86,6 +87,7 @@ export default class AdminEditor extends React.Component {
     if (!this.props.page) {
       return null
     }
+    console.log(this.props.page.page_data)
     return (
       <div className='editor'>
         {this.props.page.page_data.map(componentDef => {
@@ -102,6 +104,7 @@ export default class AdminEditor extends React.Component {
             </div>
           )
         })}
+        {this.props.page.page_data.length === 0 ? <AddComponentButton forceShow addComponentBelow={name => this.insertComponent(name, 1)} /> : null}
       </div>
     )
   }
