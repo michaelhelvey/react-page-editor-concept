@@ -6,14 +6,13 @@ export default class ConsumerPage extends React.Component {
   static propTypes = {
     data: PropTypes.shape({
       title: PropTypes.string,
-      page_data: PropTypes.string
+      page_data: PropTypes.array
     })
   }
 
   getComponents () {
-    return JSON.parse(this.props.data.page_data).map(componentDef => {
+    return this.props.data.page_data.map(componentDef => {
       const Component = cmsComponents[componentDef.component]
-      console.log(componentDef.data)
       return <Component.consumer data={componentDef.data} key={Math.random()} />
     })
   }

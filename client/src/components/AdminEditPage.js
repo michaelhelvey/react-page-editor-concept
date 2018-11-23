@@ -32,7 +32,8 @@ export default connect(
       super(props)
       this.state = {
         loadingPage: true,
-        page: props.page
+        page: props.page,
+        isSavingPage: false
       }
       this.onChangeField = this.onChangeField.bind(this)
       this.savePage = this.savePage.bind(this)
@@ -58,7 +59,10 @@ export default connect(
     }
 
     savePage () {
-      this.props.savePage(this.state.page)
+      this.setState({ isSavingPage: true })
+      this.props.savePage(this.state.page).then(() => {
+        this.setState({ isSavingPage: false })
+      })
     }
 
     render () {
@@ -72,8 +76,12 @@ export default connect(
             <div className='pages-container'>
               <div className={'pages-title-container'}>
                 <h1>Editing Page: {this.props.page.title}</h1>
-                <Button variant='primary' size='sm' onClick={this.savePage}>
-                  Save Page
+                <Button
+                  variant='primary'
+                  disabled={this.state.isSavingPage}
+                  onClick={!this.state.isSavingPage ? this.savePage : null}
+                >
+                  {this.state.isSavingPage ? 'Saving...' : 'Save Page'}
                 </Button>
               </div>
               <Form>
