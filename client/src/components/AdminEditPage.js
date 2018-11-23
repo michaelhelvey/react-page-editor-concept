@@ -5,6 +5,7 @@ import { loadPageWithId, savePage } from '../actions'
 import AdminHeader from './AdminHeader'
 import Button from 'react-bootstrap/lib/Button'
 import Form from 'react-bootstrap/lib/Form'
+import cmsComponents from '../cms'
 import './admin.css'
 
 const mapStateToProps = (state, props) => ({
@@ -15,6 +16,19 @@ const mapDispatchToProps = dispatch => ({
   loadPage: id => dispatch(loadPageWithId(id)),
   savePage: pageData => dispatch(savePage(pageData))
 })
+
+const EditorComponent = (props) => (
+  <div>
+    {props.pageData.map(componentDef => {
+      const Component = cmsComponents[componentDef.component]
+      return <Component.editor data={componentDef.data} key={Math.random()} updateData={(d) => props.onUpdateData(componentDef.component, d)} />
+    })}
+  </div>
+)
+EditorComponent.propTypes = {
+  pageData: PropTypes.array,
+  onUpdateData: PropTypes.func
+}
 
 export default connect(
   mapStateToProps,
@@ -35,8 +49,10 @@ export default connect(
         page: props.page,
         isSavingPage: false
       }
+      this.pageData = []
       this.onChangeField = this.onChangeField.bind(this)
       this.savePage = this.savePage.bind(this)
+      this.onUpdateData = this.onUpdateData.bind(this)
     }
 
     componentDidMount () {
@@ -49,6 +65,26 @@ export default connect(
       }
     }
 
+    componentDidUpdate () {
+      if (this.state.page) {
+        this.pageData = this.state.page.page_data
+      }
+    }
+
+    onUpdateData (dataId, comp, newData) {
+      // find the element in the array I want to change
+      this.pageData.forEach((componentDef, index) => {
+        if (componentDef.id === dataId) {
+          // gods of functional programming pls dont kill me i have a family
+          this.pageData[index] = {
+            ...componentDef,
+            component: comp,
+            data: newData
+          }
+        }
+      })
+    }
+
     onChangeField (key, value) {
       this.setState({
         page: {
@@ -59,8 +95,12 @@ export default connect(
     }
 
     savePage () {
+      const pageToSave = {
+        ...this.state.page,
+        page_data: this.pageData
+      }
       this.setState({ isSavingPage: true })
-      this.props.savePage(this.state.page).then(() => {
+      this.props.savePage(pageToSave).then(() => {
         this.setState({ isSavingPage: false })
       })
     }
@@ -112,6 +152,12 @@ export default connect(
                   </Form.Text>
                 </Form.Group>
               </Form>
+              <div className='editor'>
+                {this.props.page.page_data.map(componentDef => {
+                  const Component = cmsComponents[componentDef.component]
+                  return <Component.editor data={componentDef.data} key={componentDef.id} updateData={(d) => this.onUpdateData(componentDef.id, componentDef.component, d)} />
+                })}
+              </div>
             </div>
           </div>
         </div>

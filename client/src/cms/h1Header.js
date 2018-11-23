@@ -7,10 +7,10 @@ ConsumerRender.propTypes = {
 }
 
 const EditorRender = props => (
-  <input value={props.data} onChange={val => props.updateData(val)} />
+  <input defaultValue={props.data} onChange={e => props.updateData(e.target.value)} />
 )
 EditorRender.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.string,
   updateData: PropTypes.func
 }
 
