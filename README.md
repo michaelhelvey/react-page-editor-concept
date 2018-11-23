@@ -11,7 +11,7 @@ So I created this basic proof of concept, demonstrating a component based page e
 > Fair warning: the app has no validation whatsoever so it's really easy to break.
 > It's a proof-of-concept editor architecture, not a well-written website.
 
-Run `migrate_db.sql` to create your database.  (I assume you have mysql running on your system).
+Run `migrate_db.sql` to create your database.  (I assume you have mysql running on your system).  Go into `server/src/db.js` and fix the database credentials to something with access to your database.
 Then run `yarn start` in both the `client` and `server` directories.  The client will automatically open.  You can go to /admin/ to play around.
 
 Please note that "Create Page," and "Delete Page" currently don't do anything on the dashboard.  You can easily do that in Sequel Pro or something...the point of this project wasn't to demonstrate that React can create forms, so I never bothered finishing it.
